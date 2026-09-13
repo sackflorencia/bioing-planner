@@ -1,0 +1,12 @@
+.columns {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+@media (max-width: 720px) {
+  .columns {
+    flex-direction: column;
+  }
+}

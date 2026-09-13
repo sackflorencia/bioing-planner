@@ -1,0 +1,33 @@
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.locked {
+  background: var(--color-locked);
+}
+
+.available {
+  background: var(--color-available);
+}
+
+.approved {
+  background: var(--color-approved);
+}

@@ -1,0 +1,45 @@
+.message {
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.primaryButton,
+.secondaryButton,
+.dangerButton {
+  padding: 9px 16px;
+  border-radius: 9px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.primaryButton {
+  background: var(--color-accent);
+  color: white;
+}
+
+.primaryButton:hover {
+  background: var(--color-accent-strong);
+}
+
+.secondaryButton {
+  background: transparent;
+  color: var(--color-text-muted);
+  border-color: var(--color-border);
+}
+
+.secondaryButton:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text-strong);
+}
+
+.dangerButton {
+  background: var(--color-danger);
+  color: white;
+}
+
+.dangerButton:hover {
+  background: var(--color-danger-strong);
+}

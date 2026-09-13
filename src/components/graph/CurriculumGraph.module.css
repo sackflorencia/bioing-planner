@@ -1,0 +1,12 @@
+.graphContainer {
+  flex: 1;
+  min-height: 560px;
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.graphContainer :global(.react-flow__attribution) {
+  display: none;
+}

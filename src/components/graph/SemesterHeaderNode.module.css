@@ -1,0 +1,13 @@
+.header {
+  width: 220px;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-accent-strong);
+  background: var(--color-accent-soft);
+  border-radius: 8px;
+  padding: 6px 10px;
+  pointer-events: none;
+}
