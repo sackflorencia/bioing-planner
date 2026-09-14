@@ -1,4 +1,5 @@
 import type { SemesterPlan } from '../interfaces/SemesterPlan';
+import type { AcademicRecord } from '../interfaces/AcademicRecord';
 
 /**
  * Capa de persistencia única de la aplicación.
@@ -14,10 +15,28 @@ import type { SemesterPlan } from '../interfaces/SemesterPlan';
  * defecto en vez de romper la aplicación.
  */
 
+/**
+ * Compatibilidad con datos ya guardados: `completedSubjects`,
+ * `semesterPlans` y `activePlanId` conservan exactamente la misma
+ * clave y la misma forma (string[] / SemesterPlan[] / string) que
+ * tenían antes de agregar "Cursando" y las notas. Un usuario con
+ * progreso viejo simplemente sigue teniendo sus materias aprobadas y
+ * sus planes intactos.
+ *
+ * `inProgressSubjects` y `academicRecords` son claves NUEVAS. Para un
+ * usuario existente no existen todavía en localStorage, y
+ * `safeGetItem` ya devuelve `null` en ese caso → las funciones de
+ * abajo devuelven `[]` / `{}` por defecto. Es decir: no hace falta
+ * ninguna migración explícita, el propio patrón "safe get con
+ * default" que ya usaba el resto del servicio alcanza para que la
+ * nueva versión cargue datos viejos sin romperse.
+ */
 const STORAGE_KEYS = {
   completedSubjects: 'bioing:completedSubjects:v1',
   semesterPlans: 'bioing:semesterPlans:v1',
   activePlanId: 'bioing:activePlanId:v1',
+  inProgressSubjects: 'bioing:inProgressSubjects:v1',
+  academicRecords: 'bioing:academicRecords:v1',
 } as const;
 
 function safeGetItem(key: string): string | null {
@@ -115,6 +134,48 @@ export function setActivePlanId(id: string | null): void {
 }
 
 // ---------------------------------------------------------------------
+// Materias cursando
+// ---------------------------------------------------------------------
+
+export function getInProgressSubjects(): string[] {
+  const raw = safeGetItem(STORAGE_KEYS.inProgressSubjects);
+  if (!raw) return [];
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((id): id is string => typeof id === 'string');
+  } catch (error) {
+    console.warn('[storageService] No se pudieron parsear las materias cursando guardadas.', error);
+    return [];
+  }
+}
+
+export function setInProgressSubjects(ids: string[]): void {
+  safeSetItem(STORAGE_KEYS.inProgressSubjects, JSON.stringify(Array.from(new Set(ids))));
+}
+
+// ---------------------------------------------------------------------
+// Registros académicos (parciales, final, promoción) por materia
+// ---------------------------------------------------------------------
+
+export function getAcademicRecords(): Record<string, AcademicRecord> {
+  const raw = safeGetItem(STORAGE_KEYS.academicRecords);
+  if (!raw) return {};
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
+    return parsed as Record<string, AcademicRecord>;
+  } catch (error) {
+    console.warn('[storageService] No se pudieron parsear los registros académicos guardados.', error);
+    return {};
+  }
+}
+
+export function setAcademicRecords(records: Record<string, AcademicRecord>): void {
+  safeSetItem(STORAGE_KEYS.academicRecords, JSON.stringify(records));
+}
+
+// ---------------------------------------------------------------------
 // Reset general
 // ---------------------------------------------------------------------
 
@@ -122,4 +183,6 @@ export function clearUserData(): void {
   safeRemoveItem(STORAGE_KEYS.completedSubjects);
   safeRemoveItem(STORAGE_KEYS.semesterPlans);
   safeRemoveItem(STORAGE_KEYS.activePlanId);
+  safeRemoveItem(STORAGE_KEYS.inProgressSubjects);
+  safeRemoveItem(STORAGE_KEYS.academicRecords);
 }

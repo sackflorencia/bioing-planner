@@ -25,6 +25,10 @@
   --color-available-bg: #eff6ff;
   --color-available-border: #93c5fd;
 
+  --color-in-progress: #b45309;
+  --color-in-progress-bg: #fffbeb;
+  --color-in-progress-border: #fcd34d;
+
   --color-approved: #16a34a;
   --color-approved-bg: #f0fdf4;
   --color-approved-border: #86efac;

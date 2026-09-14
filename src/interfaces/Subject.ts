@@ -1,11 +1,21 @@
+import type { AcademicRecord } from './AcademicRecord';
+
 /**
  * Estado calculado de una materia en función del progreso del usuario.
  *
- * - "locked"    -> le faltan correlativas (o créditos) por aprobar.
- * - "available" -> cumple todos los requisitos, todavía no fue aprobada.
- * - "approved"  -> el usuario ya la marcó como aprobada.
+ * - "locked"      -> le faltan correlativas (o créditos) por aprobar.
+ * - "available"   -> cumple todos los requisitos, todavía no se empezó a cursar.
+ * - "in_progress" -> el usuario la está cursando (parciales en curso).
+ * - "approved"    -> ya está aprobada (por promoción, por final, o
+ *                    marcada directamente).
+ *
+ * IMPORTANTE para las correlativas: sólo "approved" cuenta como
+ * cumplido. Una materia "in_progress" (cursando) NO desbloquea a
+ * quienes la tienen como correlativa — ver
+ * utils/curriculumUtils.ts › getMissingPrerequisites, que sólo mira
+ * la lista de aprobadas.
  */
-export type SubjectStatus = 'locked' | 'available' | 'approved';
+export type SubjectStatus = 'locked' | 'available' | 'in_progress' | 'approved';
 
 /**
  * Representa una materia del plan de estudios tal como está definida
@@ -52,12 +62,22 @@ export interface Subject {
   alternateSemesters?: number[];
   /** Aclaraciones libres que se muestran en el panel de detalle. */
   notes?: string;
+  /** false = la materia requiere final obligatorio sin importar el
+   *  promedio de parciales (no se ofrece la opción de promocionar). */
+  isPromotable: boolean;
+  /** Promedio mínimo de parciales para poder promocionar. Sólo tiene
+   *  sentido si isPromotable es true; si isPromotable es true pero
+   *  este valor no está definido, se trata como "todavía sin
+   *  configurar" y tampoco se ofrece promocionar (ver
+   *  utils/academicUtils.ts › meetsPromotionRequirement). */
+  promotionAverage?: number;
 }
 
 /**
  * Una materia enriquecida con el estado calculado a partir del
- * progreso del usuario (materias aprobadas). Se genera en runtime con
- * utils/curriculumUtils.ts, nunca se guarda en data/curriculum.ts.
+ * progreso del usuario (materias aprobadas/cursando) y su información
+ * académica. Se genera en runtime con utils/curriculumUtils.ts, nunca
+ * se guarda en data/curriculum.ts.
  */
 export interface SubjectWithStatus extends Subject {
   status: SubjectStatus;
@@ -70,4 +90,15 @@ export interface SubjectWithStatus extends Subject {
   /** Créditos (horas semanales) acumulados aprobados al momento del
    *  cálculo. Útil para mostrar el progreso hacia creditsRequired. */
   approvedCreditsSoFar: number;
+  /** Registro académico (parciales, final, si promocionó). undefined
+   *  si el usuario nunca empezó a cursar esta materia. */
+  academicRecord?: AcademicRecord;
+  /** Promedio de los parciales cargados (null si todavía no hay
+   *  ninguna nota cargada). Se recalcula siempre a partir de
+   *  academicRecord.partialGrades, nunca se persiste. */
+  partialAverage: number | null;
+  /** true si, con el promedio actual, la materia cumple su propio
+   *  promotionAverage (y es promocionable). No implica que ya se haya
+   *  confirmado la promoción: eso requiere la acción explícita. */
+  meetsPromotionRequirement: boolean;
 }

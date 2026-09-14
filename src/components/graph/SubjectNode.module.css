@@ -90,6 +90,11 @@
   background: var(--color-available-bg);
 }
 
+.in_progress {
+  border-color: var(--color-in-progress-border);
+  background: var(--color-in-progress-bg);
+}
+
 .approved {
   border-color: var(--color-approved-border);
   background: var(--color-approved-bg);

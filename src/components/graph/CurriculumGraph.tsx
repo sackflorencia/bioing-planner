@@ -124,6 +124,7 @@ function CurriculumGraphInner({
             if (node.type !== 'subject') return 'var(--color-border)';
             const status = (node.data as SubjectNodeData).subject.status;
             if (status === 'approved') return 'var(--color-approved)';
+            if (status === 'in_progress') return 'var(--color-in-progress)';
             if (status === 'available') return 'var(--color-available)';
             return 'var(--color-locked)';
           }}

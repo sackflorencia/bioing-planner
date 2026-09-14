@@ -86,6 +86,10 @@
   opacity: 0.6;
 }
 
+.in_progress .itemName {
+  color: var(--color-in-progress);
+}
+
 .approved .itemName {
   color: var(--color-approved);
 }

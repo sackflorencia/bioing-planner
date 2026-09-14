@@ -1,4 +1,6 @@
 import type { Subject, SubjectStatus, SubjectWithStatus } from '../interfaces/Subject';
+import type { AcademicRecord } from '../interfaces/AcademicRecord';
+import { calculateAverage, meetsPromotionRequirement } from './academicUtils';
 
 /**
  * Lógica de negocio "pura" del plan de estudios: no sabe nada de React,
@@ -28,29 +30,41 @@ export function getMissingPrerequisites(subject: Subject, completedIds: string[]
 
 /**
  * Determina el estado de una materia:
- *  - "approved" si el usuario ya la marcó como tal.
- *  - "locked" si falta aprobar alguna correlativa, o si no llega al
- *    mínimo de creditsRequired (cuando la materia lo define).
- *  - "available" en cualquier otro caso (incluidas las materias sin
- *    correlativas, que están disponibles desde el comienzo).
+ *  - "approved"    si el usuario ya la marcó como tal (promocionada,
+ *                  aprobada por final, o marcada directamente).
+ *  - "in_progress" si la está cursando (y todavía no está aprobada).
+ *  - "locked"      si falta aprobar alguna correlativa, o si no llega
+ *                  al mínimo de creditsRequired (cuando la materia lo
+ *                  define).
+ *  - "available"   en cualquier otro caso (incluidas las materias sin
+ *                  correlativas, que están disponibles desde el
+ *                  comienzo).
  *
- * Esta función es completamente genérica: no tiene ningún caso
- * especial hardcodeado por materia. El CBC "funciona solo" porque sus
- * materias dependientes listan los 6 ids de CBC en `prerequisites`; el
- * requisito de créditos de Legislación funciona porque compara
- * `approvedCredits` contra `creditsRequired`.
+ * MUY IMPORTANTE: `getMissingPrerequisites` (y por lo tanto esta
+ * función) sólo mira `approvedIds` para decidir si una correlativa
+ * está cumplida. `inProgressIds` NUNCA entra en esa cuenta: una
+ * materia "Cursando" no desbloquea a quienes la tienen como
+ * correlativa, sólo lo hace una vez que pasa a "approved" (ya sea por
+ * promoción, por final, o marcada directamente).
+ *
+ * Esta función sigue siendo completamente genérica: no tiene ningún
+ * caso especial hardcodeado por materia.
  */
 export function computeSubjectStatus(
   subject: Subject,
-  completedIds: string[],
+  approvedIds: string[],
+  inProgressIds: string[],
   approvedCredits: number
 ): SubjectStatus {
-  const completedSet = new Set(completedIds);
-  if (completedSet.has(subject.id)) {
+  if (approvedIds.includes(subject.id)) {
     return 'approved';
   }
 
-  const hasMissingPrerequisites = getMissingPrerequisites(subject, completedIds).length > 0;
+  if (inProgressIds.includes(subject.id)) {
+    return 'in_progress';
+  }
+
+  const hasMissingPrerequisites = getMissingPrerequisites(subject, approvedIds).length > 0;
   const hasMissingCredits =
     subject.creditsRequired !== undefined && approvedCredits < subject.creditsRequired;
 
@@ -71,21 +85,34 @@ function getDirectUnlocks(subjectId: string, allSubjects: Subject[]): string[] {
 }
 
 /** Enriquece todo el plan de estudios con el estado calculado para el
- *  progreso actual del usuario. Es la función "central" que consumen
- *  el grafo, el dashboard y el planificador. */
+ *  progreso actual del usuario (aprobadas + cursando) y su información
+ *  académica (parciales/promedio/promoción). Es la función "central"
+ *  que consumen el grafo, el dashboard, el planificador y el panel de
+ *  detalle: todos parten del mismo cálculo, así que nunca puede haber
+ *  una materia "Cursando" en un lugar y "Disponible" en otro. */
 export function computeAllSubjectStatuses(
   subjects: Subject[],
-  completedIds: string[]
+  completedIds: string[],
+  inProgressIds: string[],
+  academicRecords: Record<string, AcademicRecord>
 ): SubjectWithStatus[] {
   const approvedCredits = computeApprovedCredits(subjects, completedIds);
 
-  return subjects.map((subject) => ({
-    ...subject,
-    status: computeSubjectStatus(subject, completedIds, approvedCredits),
-    missingPrerequisites: getMissingPrerequisites(subject, completedIds),
-    unlocks: getDirectUnlocks(subject.id, subjects),
-    approvedCreditsSoFar: approvedCredits,
-  }));
+  return subjects.map((subject) => {
+    const academicRecord = academicRecords[subject.id];
+    const partialAverage = academicRecord ? calculateAverage(academicRecord.partialGrades) : null;
+
+    return {
+      ...subject,
+      status: computeSubjectStatus(subject, completedIds, inProgressIds, approvedCredits),
+      missingPrerequisites: getMissingPrerequisites(subject, completedIds),
+      unlocks: getDirectUnlocks(subject.id, subjects),
+      approvedCreditsSoFar: approvedCredits,
+      academicRecord,
+      partialAverage,
+      meetsPromotionRequirement: meetsPromotionRequirement(subject, partialAverage),
+    };
+  });
 }
 
 export function groupBySemester(
@@ -117,6 +144,7 @@ export interface CurriculumStats {
   totalSubjects: number;
   approvedCount: number;
   availableCount: number;
+  inProgressCount: number;
   lockedCount: number;
   totalHours: number;
   approvedHours: number;
@@ -129,12 +157,17 @@ export interface CurriculumStats {
   /** Próximas materias disponibles (no aprobadas todavía), ordenadas
    *  por cuatrimestre. */
   nextAvailable: SubjectWithStatus[];
+  /** Materias que se están cursando actualmente, para el bloque
+   *  "Promedios actuales" del dashboard. Incluye las que todavía no
+   *  tienen ningún parcial cargado (partialAverage === null). */
+  inProgressSubjects: SubjectWithStatus[];
 }
 
 export function computeDashboardStats(subjects: SubjectWithStatus[]): CurriculumStats {
   const totalSubjects = subjects.length;
   const approvedCount = subjects.filter((s) => s.status === 'approved').length;
   const availableCount = subjects.filter((s) => s.status === 'available').length;
+  const inProgressCount = subjects.filter((s) => s.status === 'in_progress').length;
   const lockedCount = subjects.filter((s) => s.status === 'locked').length;
 
   const totalHours = subjects.reduce((sum, s) => sum + s.totalHours, 0);
@@ -161,10 +194,15 @@ export function computeDashboardStats(subjects: SubjectWithStatus[]): Curriculum
     .filter((s) => s.status === 'available')
     .sort((a, b) => a.semester - b.semester || a.code.localeCompare(b.code));
 
+  const inProgressSubjects = subjects
+    .filter((s) => s.status === 'in_progress')
+    .sort((a, b) => a.semester - b.semester || a.code.localeCompare(b.code));
+
   return {
     totalSubjects,
     approvedCount,
     availableCount,
+    inProgressCount,
     lockedCount,
     totalHours,
     approvedHours,
@@ -173,5 +211,6 @@ export function computeDashboardStats(subjects: SubjectWithStatus[]): Curriculum
     percentByHours,
     approvedBySemester,
     nextAvailable,
+    inProgressSubjects,
   };
 }

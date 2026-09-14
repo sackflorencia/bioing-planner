@@ -7,7 +7,18 @@ import SubjectDetailsPanel from '../../components/subjects/SubjectDetailsPanel';
 import styles from './Curriculum.module.css';
 
 export default function Curriculum() {
-  const { subjects, markApproved, unmarkApproved } = useCurriculum();
+  const {
+    subjects,
+    markApproved,
+    unmarkApproved,
+    markInProgress,
+    unmarkInProgress,
+    addPartialGrade,
+    removePartialGrade,
+    setPartialGradeValue,
+    registerFinalGrade,
+    promoteSubject,
+  } = useCurriculum();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(null);
 
@@ -63,6 +74,13 @@ export default function Curriculum() {
           onClose={handleCloseDetails}
           onMarkApproved={markApproved}
           onUnmarkApproved={unmarkApproved}
+          onMarkInProgress={markInProgress}
+          onUnmarkInProgress={unmarkInProgress}
+          onAddPartial={addPartialGrade}
+          onRemovePartial={removePartialGrade}
+          onChangePartial={setPartialGradeValue}
+          onRegisterFinal={registerFinalGrade}
+          onPromote={promoteSubject}
         />
       ) : null}
     </div>

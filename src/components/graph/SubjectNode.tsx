@@ -18,6 +18,7 @@ export type SubjectFlowNode = Node<SubjectNodeData, 'subject'>;
 const STATUS_ICON: Record<SubjectWithStatus['status'], string> = {
   locked: '🔒',
   available: '🟦',
+  in_progress: '📖',
   approved: '✅',
 };
 
@@ -44,6 +45,9 @@ export default function SubjectNode({ data }: NodeProps<SubjectFlowNode>) {
       <div className={styles.meta}>
         <span>{subject.weeklyHours} h/sem</span>
         {subject.creditsRequired ? <span>· {subject.creditsRequired} créditos</span> : null}
+        {subject.status === 'in_progress' && subject.partialAverage !== null ? (
+          <span>· prom. {subject.partialAverage}</span>
+        ) : null}
       </div>
 
       {subject.isElectivePlaceholder ? (

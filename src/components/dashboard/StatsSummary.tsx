@@ -8,6 +8,7 @@ interface StatsSummaryProps {
 export default function StatsSummary({ stats }: StatsSummaryProps) {
   const cards = [
     { label: 'Materias aprobadas', value: `${stats.approvedCount} / ${stats.totalSubjects}`, tone: 'approved' as const },
+    { label: 'Materias cursando', value: stats.inProgressCount, tone: 'inProgress' as const },
     { label: 'Materias disponibles', value: stats.availableCount, tone: 'available' as const },
     { label: 'Materias bloqueadas', value: stats.lockedCount, tone: 'locked' as const },
     { label: 'Horas aprobadas', value: `${stats.approvedHours} h`, tone: 'neutral' as const },

@@ -4,6 +4,7 @@ import styles from './StatusBadge.module.css';
 const LABELS: Record<SubjectStatus, string> = {
   locked: 'No cursada',
   available: 'Disponible',
+  in_progress: 'Cursando',
   approved: 'Aprobada',
 };
 

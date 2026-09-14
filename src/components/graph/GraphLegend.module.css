@@ -28,6 +28,10 @@
   background: var(--color-available);
 }
 
+.in_progress {
+  background: var(--color-in-progress);
+}
+
 .approved {
   background: var(--color-approved);
 }

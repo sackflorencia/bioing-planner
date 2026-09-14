@@ -30,6 +30,12 @@
   border: 1px solid var(--color-available-border);
 }
 
+.in_progress {
+  background: var(--color-in-progress-bg);
+  color: var(--color-in-progress);
+  border: 1px solid var(--color-in-progress-border);
+}
+
 .approved {
   background: var(--color-approved-bg);
   color: var(--color-approved);

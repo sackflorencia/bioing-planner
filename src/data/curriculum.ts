@@ -50,6 +50,19 @@ export const CBC_SUBJECT_IDS: string[] = [
  *    ejemplo "5-02"). Esto está señalado explícitamente para que se
  *    pueda reemplazar por los códigos reales de la UBA sin tocar la
  *    lógica de la app.
+ *
+ * 6. `isPromotable` / `promotionAverage` (régimen de promoción): la
+ *    consigna original no trajo esta información para ninguna materia,
+ *    así que temporariamente se dejó `isPromotable: true` y
+ *    `promotionAverage: 7` en las 42 materias, como valor por defecto
+ *    razonable y fácil de ubicar (es literalmente el mismo par de
+ *    líneas repetido en cada objeto). NINGUNO de estos valores está
+ *    inventado como si fuera el régimen real de una materia puntual:
+ *    es un placeholder uniforme pensado para completarse materia por
+ *    materia el día que se tenga el reglamento real (algunas materias
+ *    seguramente sean de final obligatorio, o tengan un promedio
+ *    mínimo distinto de 7). Cambiar esto NO requiere tocar la lógica
+ *    de la app: sólo estos dos campos por materia.
  */
 export const curriculum: Subject[] = [
   // ---------------------------------------------------------------
@@ -63,6 +76,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 4,
     totalHours: 64,
     prerequisites: [],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'cbc-pensamiento-cientifico',
@@ -72,6 +87,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 4,
     totalHours: 64,
     prerequisites: [],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'cbc-analisis-matematico-a',
@@ -81,6 +98,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 9,
     totalHours: 144,
     prerequisites: [],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'cbc-algebra-a',
@@ -90,6 +109,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 9,
     totalHours: 144,
     prerequisites: [],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'cbc-fisica',
@@ -99,6 +120,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: [],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'cbc-pensamiento-computacional',
@@ -108,6 +131,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: [],
+    isPromotable: true,
+    promotionAverage: 7,
   },
 
   // ---------------------------------------------------------------
@@ -121,6 +146,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 8,
     totalHours: 128,
     prerequisites: [...CBC_SUBJECT_IDS],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'quimica-basica',
@@ -130,6 +157,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: [...CBC_SUBJECT_IDS],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'introduccion-bioingenieria',
@@ -139,6 +168,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: [...CBC_SUBJECT_IDS],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'anatomia-histologia-funcional',
@@ -148,6 +179,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 4,
     totalHours: 64,
     prerequisites: [...CBC_SUBJECT_IDS],
+    isPromotable: true,
+    promotionAverage: 7,
   },
 
   // ---------------------------------------------------------------
@@ -161,6 +194,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: [...CBC_SUBJECT_IDS],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'algoritmos-programacion',
@@ -170,6 +205,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: [...CBC_SUBJECT_IDS],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'planificacion-proyectos',
@@ -179,6 +216,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 2,
     totalHours: 32,
     prerequisites: ['introduccion-bioingenieria'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'algebra-lineal',
@@ -188,6 +227,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 8,
     totalHours: 128,
     prerequisites: [...CBC_SUBJECT_IDS],
+    isPromotable: true,
+    promotionAverage: 7,
   },
 
   // ---------------------------------------------------------------
@@ -201,6 +242,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: ['quimica-basica'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'probabilidad-estadistica',
@@ -210,6 +253,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: ['analisis-matematico-ii', 'algebra-lineal'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'senales-sistemas',
@@ -219,6 +264,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: ['analisis-matematico-ii', 'algebra-lineal'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'electricidad-magnetismo-calor',
@@ -228,6 +275,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: ['analisis-matematico-ii', 'fisica-sistemas-particulas'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
 
   // ---------------------------------------------------------------
@@ -241,6 +290,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: ['quimica-compuestos-organicos', 'anatomia-histologia-funcional'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'fisica-solidos-nuclear',
@@ -250,6 +301,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: ['electricidad-magnetismo-calor', 'quimica-basica', 'probabilidad-estadistica'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'control-automatico',
@@ -259,6 +312,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: ['electricidad-magnetismo-calor', 'senales-sistemas'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'analisis-circuitos',
@@ -268,6 +323,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: ['introduccion-bioingenieria', 'electricidad-magnetismo-calor'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
 
   // ---------------------------------------------------------------
@@ -281,6 +338,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: ['probabilidad-estadistica', 'senales-sistemas'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'introduccion-dispositivos-electronicos',
@@ -290,6 +349,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 4,
     totalHours: 64,
     prerequisites: ['introduccion-bioingenieria'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'sistemas-fisiologicos-modelos',
@@ -299,6 +360,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 8,
     totalHours: 128,
     prerequisites: ['sistemas-moleculares-celulares-tisulares', 'control-automatico'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'introduccion-mecanica-continuo',
@@ -308,6 +371,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: ['algebra-lineal', 'electricidad-magnetismo-calor'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
 
   // ---------------------------------------------------------------
@@ -321,6 +386,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: ['procesos-estocasticos'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'circuitos-microelectronicos',
@@ -330,6 +397,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: ['introduccion-dispositivos-electronicos', 'analisis-circuitos'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'introduccion-sistemas-embebidos',
@@ -339,6 +408,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: ['algoritmos-programacion', 'analisis-circuitos'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'gestion-proyectos',
@@ -348,6 +419,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: ['planificacion-proyectos'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'legislacion-ejercicio-profesional',
@@ -359,6 +432,8 @@ export const curriculum: Subject[] = [
     prerequisites: [],
     creditsRequired: 100,
     notes: 'Requisito: 100 créditos (suma de horas semanales) de materias aprobadas. No depende de una materia puntual.',
+    isPromotable: true,
+    promotionAverage: 7,
   },
 
   // ---------------------------------------------------------------
@@ -372,6 +447,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 4,
     totalHours: 64,
     prerequisites: ['sistemas-fisiologicos-modelos', 'introduccion-mecanica-continuo'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'instrumentacion-equipamiento-diagnostico-tratamiento',
@@ -381,6 +458,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: ['sistemas-fisiologicos-modelos', 'circuitos-microelectronicos'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'introduccion-biomateriales',
@@ -390,6 +469,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 4,
     totalHours: 64,
     prerequisites: ['sistemas-fisiologicos-modelos', 'fisica-solidos-nuclear'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'analisis-procesamiento-senales-bioingenieria',
@@ -399,6 +480,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: ['sistemas-fisiologicos-modelos', 'procesos-estocasticos'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'higiene-seguridad',
@@ -408,6 +491,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 2,
     totalHours: 32,
     prerequisites: ['quimica-basica'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
 
   // ---------------------------------------------------------------
@@ -421,6 +506,8 @@ export const curriculum: Subject[] = [
     weeklyHours: 6,
     totalHours: 96,
     prerequisites: ['sistemas-fisiologicos-modelos', 'senales-sistemas', 'fisica-solidos-nuclear'],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'tecnologia-asistencia-protesis',
@@ -435,6 +522,8 @@ export const curriculum: Subject[] = [
       'introduccion-sistemas-embebidos',
       'circuitos-microelectronicos',
     ],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'tesis-bioingenieria',
@@ -451,6 +540,8 @@ export const curriculum: Subject[] = [
     ],
     alternateSemesters: [11],
     notes: 'El plan original la lista igual en 10º y 11º cuatrimestre: se modela como una única instancia curricular que puede cursarse en cualquiera de los dos.',
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'electivas-10',
@@ -462,6 +553,8 @@ export const curriculum: Subject[] = [
     prerequisites: [],
     isElectivePlaceholder: true,
     notes: 'Casillero genérico para materias electivas. Reemplazar o expandir cuando se defina la oferta real de optativas.',
+    isPromotable: true,
+    promotionAverage: 7,
   },
 
   // ---------------------------------------------------------------
@@ -480,6 +573,8 @@ export const curriculum: Subject[] = [
       'higiene-seguridad',
       'imagenes-bioingenieria',
     ],
+    isPromotable: true,
+    promotionAverage: 7,
   },
   {
     id: 'electivas-11',
@@ -491,5 +586,7 @@ export const curriculum: Subject[] = [
     prerequisites: [],
     isElectivePlaceholder: true,
     notes: 'Casillero genérico para materias electivas. Reemplazar o expandir cuando se defina la oferta real de optativas.',
+    isPromotable: true,
+    promotionAverage: 7,
   },
 ];

@@ -5,6 +5,7 @@ import StatsSummary from '../../components/dashboard/StatsSummary';
 import ProgressBar from '../../components/dashboard/ProgressBar';
 import UpcomingSubjects from '../../components/dashboard/UpcomingSubjects';
 import SemesterProgressTable from '../../components/dashboard/SemesterProgressTable';
+import CurrentAverages from '../../components/dashboard/CurrentAverages';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import styles from './Dashboard.module.css';
 
@@ -38,6 +39,7 @@ export default function Dashboard() {
       <div className={styles.grid}>
         <div className={styles.column}>
           <ProgressBar percentBySubjects={stats.percentBySubjects} percentByHours={stats.percentByHours} />
+          <CurrentAverages subjects={stats.inProgressSubjects} />
           <SemesterProgressTable rows={stats.approvedBySemester} />
         </div>
 

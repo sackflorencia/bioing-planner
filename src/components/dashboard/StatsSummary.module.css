@@ -1,6 +1,6 @@
 .grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 14px;
 }
 
@@ -34,17 +34,27 @@
   color: var(--color-available);
 }
 
+.inProgress .value {
+  color: var(--color-in-progress);
+}
+
 .locked .value {
   color: var(--color-locked);
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 420px) {
   .grid {
     grid-template-columns: 1fr;
   }

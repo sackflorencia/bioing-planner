@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import Modal from '../common/Modal';
 import StatusBadge from '../common/StatusBadge';
+import AcademicRecordSection from './AcademicRecordSection';
 import type { SubjectWithStatus } from '../../interfaces/Subject';
 import { formatSemesterLabel } from '../../utils/curriculumUtils';
 import styles from './SubjectDetailsPanel.module.css';
@@ -11,6 +12,13 @@ interface SubjectDetailsPanelProps {
   onClose: () => void;
   onMarkApproved: (subjectId: string) => void;
   onUnmarkApproved: (subjectId: string) => void;
+  onMarkInProgress: (subjectId: string) => void;
+  onUnmarkInProgress: (subjectId: string) => void;
+  onAddPartial: (subjectId: string) => void;
+  onRemovePartial: (subjectId: string, partialId: string) => void;
+  onChangePartial: (subjectId: string, partialId: string, value: number | null) => void;
+  onRegisterFinal: (subjectId: string, grade: number) => void;
+  onPromote: (subjectId: string) => void;
 }
 
 function subjectName(allSubjects: SubjectWithStatus[], id: string): string {
@@ -23,6 +31,13 @@ export default function SubjectDetailsPanel({
   onClose,
   onMarkApproved,
   onUnmarkApproved,
+  onMarkInProgress,
+  onUnmarkInProgress,
+  onAddPartial,
+  onRemovePartial,
+  onChangePartial,
+  onRegisterFinal,
+  onPromote,
 }: SubjectDetailsPanelProps) {
   const prerequisiteNames = useMemo(
     () => subject.prerequisites.map((id) => subjectName(allSubjects, id)),
@@ -115,13 +130,22 @@ export default function SubjectDetailsPanel({
 
       <div className={styles.actions}>
         {subject.status === 'available' ? (
-          <button
-            type="button"
-            className={styles.approveButton}
-            onClick={() => onMarkApproved(subject.id)}
-          >
-            Marcar como aprobada
-          </button>
+          <>
+            <button
+              type="button"
+              className={styles.approveButton}
+              onClick={() => onMarkInProgress(subject.id)}
+            >
+              Marcar como cursando
+            </button>
+            <button
+              type="button"
+              className={styles.secondaryTextButton}
+              onClick={() => onMarkApproved(subject.id)}
+            >
+              Marcar como aprobada directamente
+            </button>
+          </>
         ) : null}
 
         {subject.status === 'approved' ? (
@@ -140,6 +164,18 @@ export default function SubjectDetailsPanel({
           </p>
         ) : null}
       </div>
+
+      {subject.status === 'in_progress' || (subject.status === 'approved' && subject.academicRecord) ? (
+        <AcademicRecordSection
+          subject={subject}
+          onAddPartial={() => onAddPartial(subject.id)}
+          onRemovePartial={(partialId) => onRemovePartial(subject.id, partialId)}
+          onChangePartial={(partialId, value) => onChangePartial(subject.id, partialId, value)}
+          onRegisterFinal={(grade) => onRegisterFinal(subject.id, grade)}
+          onPromote={() => onPromote(subject.id)}
+          onUnmarkInProgress={() => onUnmarkInProgress(subject.id)}
+        />
+      ) : null}
     </Modal>
   );
 }
